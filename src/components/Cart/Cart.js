@@ -24,12 +24,23 @@ const Cart = props => {
         setIsCheckout(true);
     };
 
+    const submitOrderHandler = (userData) => {
+        fetch('https://vue-http-demo-a3d10-default-rtdb.europe-west1.firebasedatabase.app/orders.json', {
+            method: 'POST',
+            body: JSON.stringify({
+                user: userData,
+                orderedItems: cartCtx.items
+            })
+        });
+    };
+
     const cartItems = (
         <ul className={classes['cart-items']}>
             {cartCtx.items.map((item) => (
                 <CartItem
                     key={item.id}
                     name={item.name}
+                    description={item.description}
                     amount={item.amount}
                     price={item.price}
                     onRemove={CartItemRemoveHandler.bind(null, item.id)}
@@ -52,7 +63,7 @@ const Cart = props => {
                 <span>Total Amount</span>
                 <span>{totalAmount}</span>
             </div>
-            {isCheckout && <Checkout onCancel={props.onClose}/>}
+            {isCheckout && <Checkout onCorfirm={submitOrderHandler} onCancel={props.onClose}/>}
             {!isCheckout && modalActions}
         </Modal>
     )
